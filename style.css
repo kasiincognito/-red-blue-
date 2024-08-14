@@ -1,0 +1,139 @@
+    div{
+        position:absolute;
+    }
+    #limit-box{
+        height:300px;
+        width:400px;
+        background-color:black;
+        border:solid white 2px;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+    }
+    #limit-score{
+        top:0;
+    }
+    #limit-text{
+        font-size:26px;
+        top:20px;
+    }
+    button{
+        position:absolute;
+        height:50px;
+        width:100px;
+        bottom:40px;
+        color:white;
+        font-family:KG Summer Sunshine;
+        background-color:black;
+        border:solid white 2px;
+        box-shadow:0px 10px 0px white;
+    }
+    #submit{
+        background-color:black;
+        border:solid white 2px;
+        box-shadow:0px 10px 0px white;
+    }
+    #limit{
+        background-color:rgb(11, 10, 10);
+        height:30px;
+        color:white;
+        font-family:KG Summer Sunshine;
+        width:70%;
+    }
+    #container{
+        width:100%;
+        height:100%;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+    }
+    #winner{
+        font-size:80px;
+    }
+	html, body{
+	background-image:url("font.png");
+	background-repeat:no-repeat;
+    display:flex;
+    height:100%;
+    overflow:hidden;
+    background-position: center;
+    background-size: cover;
+	}
+    #red {
+    height: 100px;
+    width: 110px;
+        }
+	#blue{
+	height:100px;
+	width:110px;
+	}
+        #player1 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            border-radius: 20px;
+        }
+        .bullet1{
+            height:20px;
+            width:100px;
+            background-image:url("bullet1.png");
+            background-position-x: center;
+            background-position-y: center;
+            background-color:white;
+            position:absolute;
+            bottom:0;
+            animation-name:bullet1;
+            animation-duration:1s;
+            animation-timing-function: linear;
+            animation-iteration-count: 1;
+        }
+        #score1{
+            top:85%;
+        }
+        #score2{
+            top:85%;
+            right:10px;
+        }
+        .bullet2{
+            background-image:url("bullet2.png");
+            background-position-x: center;
+            background-position-y: center;
+            height:20px;
+            width:100px;
+            position:absolute;
+            bottom:0;
+            animation-name:bullet2;
+            animation-duration:1s;
+            animation-timing-function: linear;
+            animation-iteration-count: 1;
+        }
+        @keyframes bullet1 {
+            from{left:0;}
+            to{left:100%;}
+        }
+        @keyframes bullet2 {
+            from{right:0;}
+            to{right:100%;}
+        }
+        @keyframes animation {
+            0%{font-size:50px;}
+            50%{font-size:100px;}
+            100%{font-size:80px;}
+        }
+        #player2 {
+            height: 100px;
+            width: 100px;
+            background-color: blue;
+            right: 20px;
+            border-radius: 20px;
+            position: absolute;
+        }
+        h1{
+            color:white;
+            position:absolute;
+            font-family:KG Summer Sunshine;
+        }
+        #number2{
+            right:0;
+        }
