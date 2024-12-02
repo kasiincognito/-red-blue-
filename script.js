@@ -1,9 +1,11 @@
 function startGame(){
+    myGameArea.start()
+    laser = new sound("shot.mp3")
+    explosion = new sound("explosion.mp3")
     red = new component(161, 132, "red.png", 0,  window.innerHeight / 2, "image")
     blue = new component(161, 132, "blue.png", window.innerWidth - 161, window.innerHeight / 2, "image")
     redBullets = []
     blueBullets = []
-    myGameArea.start()
 }
 
 var myGameArea = {
@@ -30,10 +32,16 @@ var myGameArea = {
             }
 
             if(event.key === "t"){
-                redBullets.push(new component(70, 10, "red", blue.width, red.y + (red.height / 2), ""))
+                redBullets.unshift(new component(100, 30, "bullet1.png", blue.width, red.y + (red.height / 2), "image"))
+                laser.play()
+                laser = ""
+                laser = new sound("shot.mp3")
             }
             else if(event.key === "m"){
-                blueBullets.push(new component(70, 10, "blue", window.innerWidth - blue.width, blue.y + (blue.height / 2), ""))
+                blueBullets.unshift(new component(100, 30, "bullet2.png", window.innerWidth - blue.width, blue.y + (blue.height / 2), "image"))
+                laser.play()
+                laser = ""
+                laser = new sound("shot.mp3")
             }
         })
         window.addEventListener("keyup", function(event){
@@ -94,6 +102,12 @@ function component(width, height, color, x, y, type) {
             this.y = window.innerHeight - this.height
         }
     }
+    
+    this.collideWith = function(bullet){
+        if(this.x + this.width >= bullet.x && this.y <= bullet.y && this.y +this.height >= bullet.y || bullet.x <= 0){
+            return true
+        }
+    }
 }
 
 function updateGameArea(){
@@ -110,11 +124,32 @@ function updateGameArea(){
             blueBullets[e].x -= 30
             blueBullets[e].update()
         }
+        for(var a = 0; a < blueBullets.length; a++){
+            if(red.collideWith(blueBullets[a])){
+                blueBullets.pop()
+                explosion.play()
+                explosion = ""
+                explosion = new sound("explosion.mp3")
+            }
+        }
     }
+
     red.update()
     red.newPos()
     blue.update()
     blue.newPos()
+}
+
+function sound(src){
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function(){
+        this.sound.play();
+    }
 }
 
 
