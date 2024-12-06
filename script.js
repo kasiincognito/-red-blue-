@@ -1,47 +1,47 @@
-function startGame(){
-    myGameArea.start()
-    laser = new sound("shot.mp3")
-    explosion = new sound("explosion.mp3")
-    red = new component(161, 132, "red.png", 0,  window.innerHeight / 2, "image")
-    blue = new component(161, 132, "blue.png", window.innerWidth - 161, window.innerHeight / 2, "image")
+function startGame(){                                       // fonction pour initier le jeu
+    myGameArea.start()                                      // commencement de l'objet 'myGameArea'
+    laser = new sound("assets/sounds/laser.mp3")
+    explosion = new sound("assets/sounds/explosion.mp3")
+    red = new component(161, 132, "assets/images/red.png", 0,  window.innerHeight / 2, "image")
+    blue = new component(161, 132, "assets/images/blue.png", window.innerWidth - 161, window.innerHeight / 2, "image")
     redBullets = []
     blueBullets = []
 }
 
-var myGameArea = {
+var myGameArea = {                                          // La variable myGameArea est un objet 'canvas'
     canvas : document.createElement("canvas"),
-    start : function(){
+    start : function(){                                     // Méthode start() pour l'objet myGameArea pour créer le canvas
         this.canvas.width = window.innerWidth
         this.canvas.height = window.innerHeight
         this.context = this.canvas.getContext("2d")
         document.body.insertBefore(this.canvas, document.body.childNodes[0])
         this.interval = setInterval(updateGameArea, 20)
-        window.addEventListener("keydown", function(event){
+        window.addEventListener("keydown", function(event){ // Vérification des touches claviers
             if(event.key === "z"){
-                red.move = "up"
+                red.move = "up"     
             }
-            else if(event.key === "s"){
+            if(event.key === "s"){
                 red.move = "down"
             }
 
             if(event.key === "ArrowUp"){
                 blue.move = "up"
             }
-            else if(event.key === "ArrowDown"){
+            if(event.key === "ArrowDown"){
                 blue.move = "down"
             }
 
             if(event.key === "t"){
-                redBullets.unshift(new component(100, 30, "bullet1.png", blue.width, red.y + (red.height / 2), "image"))
+                redBullets.unshift(new component(100, 30, "assets/images/bullet1.png", blue.width, red.y + (red.height / 2), "image"))
                 laser.play()
                 laser = ""
-                laser = new sound("shot.mp3")
+                laser = new sound("assets/sounds/laser.mp3")
             }
-            else if(event.key === "m"){
-                blueBullets.unshift(new component(100, 30, "bullet2.png", window.innerWidth - blue.width, blue.y + (blue.height / 2), "image"))
+            if(event.key === "m"){
+                blueBullets.unshift(new component(100, 30, "assets/images/bullet2.png", window.innerWidth - blue.width, blue.y + (blue.height / 2), "image"))
                 laser.play()
                 laser = ""
-                laser = new sound("shot.mp3")
+                laser = new sound("assets/sounds/laser.mp3")
             }
         })
         window.addEventListener("keyup", function(event){
@@ -53,12 +53,12 @@ var myGameArea = {
             }
         })
     },
-    clear : function() {
+    clear : function() {                                    // Méthode de utilisée pour effacer le contenu du canvas et reremplir dans la fonction updateGameArea
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 }
 
-function component(width, height, color, x, y, type) {
+function component(width, height, color, x, y, type) {      // une moule de base pour chaques objet que le canvas contient
     this.type = type
     this.move
     if(type == "image"){
@@ -69,7 +69,7 @@ function component(width, height, color, x, y, type) {
     this.height = height
     this.x = x
     this.y = y
-    this.update = function(){
+    this.update = function(){                               // Méthode de mise à jour de chaques composants du canvas (du jeu)
         ctx = myGameArea.context;
         if(this.type == "image"){
             ctx.drawImage(this.image, this.x, this.y, this.width, this.height)
@@ -84,7 +84,7 @@ function component(width, height, color, x, y, type) {
             ctx.fillRect(this.x, this.y, this.width, this.height);
         }
     }
-    this.newPos = function(){
+    this.newPos = function(){                               // Méthode de mise à jour de position pour les joueurs
         if(this.move == "up"){
             this.y -= 10
         }
@@ -103,19 +103,46 @@ function component(width, height, color, x, y, type) {
         }
     }
     
-    this.collideWith = function(bullet){
-        if(this.x + this.width >= bullet.x && this.y <= bullet.y && this.y +this.height >= bullet.y || bullet.x <= 0){
+    this.collideWithBlue = function(bullet){                // Méthode de verification de collision pour les balles de bleu pour le joueur rouge
+        if(this.x + this.width >= bullet.x && this.y <= bullet.y && this.y +this.height >= bullet.y){
+            return true
+        }
+    }
+
+    this.collideWithRed = function(bullet){                 // Méthode de verification de collision avec les balles de rouge pour le joueur bleu
+        if(this.x <= bullet.x + bullet.width && this.y <= bullet.y && this.y +this.height >= bullet.y){
+            return true
+        }
+    }
+
+    this.collideWithBlueWall = function(){
+        if(this.x + this.width >= window.innerWidth){
+            return true
+        }
+    }
+
+    this.collideWithRedWall = function(){
+        if(this.x <= 0){
             return true
         }
     }
 }
 
-function updateGameArea(){
+function updateGameArea(){                                  // Les instructions pour la fonction de mise à jour du canvas (le jeu)
     myGameArea.clear()
     if(redBullets.length > 0){
         for(var i = 0; i < redBullets.length; i++){
             redBullets[i].x += 30
             redBullets[i].update()
+        }
+        for(var z = 0; z < redBullets.length; z++){
+            if(blue.collideWithRed(redBullets[z]) || redBullets[z].collideWithBlueWall()){
+                redBullets[z].image = "assets/images/explosion.png"
+                explosion.play()
+                explosion = ""
+                explosion = new sound("assets/sounds/explosion.mp3")
+                redBullets.pop()
+            }
         }
     }
     
@@ -125,11 +152,12 @@ function updateGameArea(){
             blueBullets[e].update()
         }
         for(var a = 0; a < blueBullets.length; a++){
-            if(red.collideWith(blueBullets[a])){
-                blueBullets.pop()
+            if(red.collideWithBlue(blueBullets[a]) || blueBullets[a].collideWithRedWall()){
+                blueBullets[a].image = "assets/images/explosion.png"
                 explosion.play()
                 explosion = ""
-                explosion = new sound("explosion.mp3")
+                explosion = new sound("assets/sounds/explosion.mp3")
+                blueBullets.pop()
             }
         }
     }
@@ -140,7 +168,7 @@ function updateGameArea(){
     blue.newPos()
 }
 
-function sound(src){
+function sound(src){                                        // Moule à son
     this.sound = document.createElement("audio");
     this.sound.src = src;
     this.sound.setAttribute("preload", "auto");
@@ -153,4 +181,4 @@ function sound(src){
 }
 
 
-startGame()
+startGame()                                                 // Appel au commencement du jeu
