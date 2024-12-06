@@ -1,5 +1,17 @@
 function startGame(){                                       // fonction pour initier le jeu
+    redLifeX = 20
+    blueLifeX = window.innerWidth - 70
     myGameArea.start()                                      // commencement de l'objet 'myGameArea'
+    redLife = []
+    blueLife = []
+    for(var i = 0; i < 8; i++){
+        redLife.push(new component(50, 50, "assets/images/redHeart.png", redLifeX, 20, "image"))
+        redLifeX += 60
+    }
+    for(var i = 0; i < 8; i++){
+        blueLife.push(new component(50, 50, "assets/images/blueHeart.png", blueLifeX, 20, "image"))
+        blueLifeX -= 60
+    }
     laser = new sound("assets/sounds/laser.mp3")
     explosion = new sound("assets/sounds/explosion.mp3")
     red = new component(161, 132, "assets/images/red.png", 0,  window.innerHeight / 2, "image")
@@ -136,8 +148,8 @@ function updateGameArea(){                                  // Les instructions 
             redBullets[i].update()
         }
         for(var z = 0; z < redBullets.length; z++){
-            if(blue.collideWithRed(redBullets[z]) || redBullets[z].collideWithBlueWall()){
-                redBullets[z].image = "assets/images/explosion.png"
+            if(blue.collideWithRed(redBullets[z])){
+                blueLife.pop()
                 explosion.play()
                 explosion = ""
                 explosion = new sound("assets/sounds/explosion.mp3")
@@ -152,14 +164,32 @@ function updateGameArea(){                                  // Les instructions 
             blueBullets[e].update()
         }
         for(var a = 0; a < blueBullets.length; a++){
-            if(red.collideWithBlue(blueBullets[a]) || blueBullets[a].collideWithRedWall()){
-                blueBullets[a].image = "assets/images/explosion.png"
+            if(red.collideWithBlue(blueBullets[a])){
+                redLife.pop()
                 explosion.play()
                 explosion = ""
                 explosion = new sound("assets/sounds/explosion.mp3")
                 blueBullets.pop()
             }
         }
+    }
+
+    if(redLife.length > 0){
+        for(var o = 0; o < redLife.length; o++){
+            redLife[o].update()
+        }
+    }
+    else{
+        alert("Red won")
+    }
+
+    if(blueLife.length > 0){
+        for(var o = 0; o < blueLife.length; o++){
+            blueLife[o].update()
+        }
+    }
+    else{
+        alert("Blue won")
     }
 
     red.update()
