@@ -155,6 +155,13 @@ function updateGameArea(){                                  // Les instructions 
                 explosion = new sound("assets/sounds/explosion.mp3")
                 redBullets.pop()
             }
+
+            else if(redBullets[z].collideWithBlueWall()){
+                explosion.play()
+                explosion = ""
+                explosion = new sound("assets/sounds/explosion.mp3")
+                redBullets.pop()
+            }
         }
     }
     
@@ -171,6 +178,13 @@ function updateGameArea(){                                  // Les instructions 
                 explosion = new sound("assets/sounds/explosion.mp3")
                 blueBullets.pop()
             }
+            
+            else if(blueBullets[a].collideWithRedWall()){
+                explosion.play()
+                explosion = ""
+                explosion = new sound("assets/sounds/explosion.mp3")
+                blueBullets.pop()
+            }
         }
     }
 
@@ -180,7 +194,7 @@ function updateGameArea(){                                  // Les instructions 
         }
     }
     else{
-        alert("Red won")
+        startGame()
     }
 
     if(blueLife.length > 0){
@@ -189,7 +203,7 @@ function updateGameArea(){                                  // Les instructions 
         }
     }
     else{
-        alert("Blue won")
+        startGame()
     }
 
     red.update()
